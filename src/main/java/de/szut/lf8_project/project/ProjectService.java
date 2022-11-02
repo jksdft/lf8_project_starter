@@ -4,6 +4,7 @@ import de.szut.lf8_project.project.dto.GetProjectDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
@@ -37,5 +38,10 @@ public class ProjectService {
     public ResponseEntity<GetProjectDto> refreshProject (@RequestBody GetProjectDto dtoToUpdate){
         Long id = dtoToUpdate.getId();
         Optional<GetProjectDto> response = ProjectRepository.findById(id);
+    }
+
+    public List<ProjectEntity> getAllProjects(){
+        List<ProjectEntity> projectList = projectRepository.findAll();
+        return projectList;
     }
 }

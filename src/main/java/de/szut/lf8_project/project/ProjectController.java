@@ -40,4 +40,11 @@ public class ProjectController {
         Long id = dtoToUpdate.getId();
 
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProject(@PathVariable Long id){
+        ProjectEntity project = projectService.getProjectById(id);
+        projectService.deleteProject(project);
+        return new ResponseEntity<>("Project with ID " + id + " deleted", HttpStatus.OK);
+    }
 }

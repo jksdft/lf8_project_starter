@@ -23,7 +23,7 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<GetProjectDto> createProject(@RequestBody@Valid AddProjectDto dto){
         ProjectEntity project = projectMapper.mapAddProjectDtoToProjectEntity(dto);
-        project = projectService.create(project);
+        project = projectService.createProject(project);
         GetProjectDto getDto = this.projectMapper.mapProjectEntityToGetProjectDto(project);
         return new ResponseEntity<>(getDto, HttpStatus.CREATED);
     }

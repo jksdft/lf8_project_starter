@@ -19,7 +19,7 @@ public class ProjectService {
     }
 
 
-    public ProjectEntity create(ProjectEntity project){
+    public ProjectEntity createProject(ProjectEntity project){
         return this.projectRepository.save(project);
     }
 

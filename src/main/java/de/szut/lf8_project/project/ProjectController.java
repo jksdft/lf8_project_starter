@@ -28,5 +28,16 @@ public class ProjectController {
         return new ResponseEntity<>(getDto, HttpStatus.CREATED);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<GetProjectDto> getProject(@PathVariable Long id) {
+        ProjectEntity project = this.projectService.getProjectById(id);
+        GetProjectDto dto = this.projectMapper.mapProjectEntityToGetProjectDto(project);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
 
+    @PutMapping
+    public ResponseEntity<GetProjectDto> refreshProject (@RequestBody GetProjectDto dtoToUpdate){
+        Long id = dtoToUpdate.getId();
+
+    }
 }

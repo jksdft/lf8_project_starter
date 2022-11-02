@@ -22,4 +22,20 @@ public class ProjectService {
     public ProjectEntity create(ProjectEntity project){
         return this.projectRepository.save(project);
     }
+
+    public void deleteProject(ProjectEntity project) {
+        this.projectRepository.delete(project);
+    }
+
+    public ProjectEntity getProjectById(Long id) throws ResourceNotFoundException {
+        Optional<ProjectEntity> optional = this.projectRepository.findById(id);
+        if (optional.isPresent())
+            return optional.get();
+        throw new ResourceNotFoundException("Project with ID " + id + " not found");
+    }
+
+    public ResponseEntity<GetProjectDto> refreshProject (@RequestBody GetProjectDto dtoToUpdate){
+        Long id = dtoToUpdate.getId();
+        Optional<GetProjectDto> response = ProjectRepository.findById(id);
+    }
 }

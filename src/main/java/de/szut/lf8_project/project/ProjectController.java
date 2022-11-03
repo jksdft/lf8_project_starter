@@ -61,8 +61,4 @@ public class ProjectController {
         GetProjectDto request = this.projectMapper.mapProjectEntityToGetProjectDto(updateProject);
         return new ResponseEntity<>(request,HttpStatus.OK);
     }
-
-    public interface getAllProjectsFromEmployee extends JpaRepository<ProjectRepository, Long> {
-        public List<ProjectRepository> findAllByIdAsc();
-    }
 }

@@ -2,13 +2,19 @@ package de.szut.lf8_project.project;
 
 import de.szut.lf8_project.project.dto.AddProjectDto;
 import de.szut.lf8_project.project.dto.GetProjectDto;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.LinkedList;
 
 @RestController
 @RequestMapping(value = "project")
@@ -47,16 +53,16 @@ public class ProjectController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<GetProjectDto> refreshProject (@RequestBody GetProjectDto dtoToUpdate){
-        Long id = dtoToUpdate.getId();
-
+    @PutMapping("/{id}")
+    public ResponseEntity<GetProjectDto> updateProjectEntity(@PathVariable Long id, @Valid @RequestBody AddProjectDto entryToUpdate) {
+        ProjectEntity updateProject = this.projectMapper.mapAddProjectDtoToProjectEntity(entryToUpdate);
+        updateProject.setId(id);
+        updateProject = this.projectService.update(updateProject);
+        GetProjectDto request = this.projectMapper.mapProjectEntityToGetProjectDto(updateProject);
+        return new ResponseEntity<>(request,HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProject(@PathVariable Long id){
-        ProjectEntity project = projectService.getProjectById(id);
-        projectService.deleteProject(project);
-        return new ResponseEntity<>("Project with ID " + id + " deleted", HttpStatus.OK);
+    public interface getAllProjectsFromEmployee extends JpaRepository<ProjectRepository, Long> {
+        public List<ProjectRepository> findAllByIdAsc();
     }
 }

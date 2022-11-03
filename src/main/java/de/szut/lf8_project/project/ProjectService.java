@@ -35,13 +35,20 @@ public class ProjectService {
         throw new ResourceNotFoundException("Project with ID " + id + " not found");
     }
 
-    public ResponseEntity<GetProjectDto> refreshProject (@RequestBody GetProjectDto dtoToUpdate){
-        Long id = dtoToUpdate.getId();
-        Optional<GetProjectDto> response = ProjectRepository.findById(id);
-    }
-
     public List<ProjectEntity> getAllProjects(){
         List<ProjectEntity> projectList = projectRepository.findAll();
         return projectList;
+    }
+
+    public ProjectEntity update(ProjectEntity project){
+        ProjectEntity updatedProject = getProjectById(project.getId());
+        updatedProject.setProjectDescription(project.getProjectDescription());
+        updatedProject.setResponsibleEmployee(project.getResponsibleEmployee());
+        updatedProject.setResponsibleCustomer(project.getResponsibleCustomer());
+        updatedProject.setComment(project.getComment());
+        updatedProject.setRealEndDate(project.getRealEndDate());
+
+        updatedProject = this.projectRepository.save(updatedProject);
+        return updatedProject;
     }
 }

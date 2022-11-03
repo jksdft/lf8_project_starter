@@ -21,6 +21,4 @@ public class ProjectEntity {
     private LocalDateTime startDate;
     private LocalDateTime expectedEndDate;
     private LocalDateTime realEndDate;
-
-
 }

@@ -1,5 +1,6 @@
 package de.szut.lf8_project.employee;
 
+import de.szut.lf8_project.project.ProjectEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,8 +13,11 @@ public class EmployeeService {
 
     private EmployeeRestService restService;
 
-    public EmployeeService(){
+    private EmployeeProjectRepository employeeProjectRepository;
+
+    public EmployeeService(EmployeeProjectRepository employeeProjectRepository){
         this.restService = new EmployeeRestService();
+        this.employeeProjectRepository = employeeProjectRepository;
     }
 
     public EmployeeEntity getEmployeeById(Long id){
@@ -30,5 +34,13 @@ public class EmployeeService {
         employeeEntity.setSkillSet(skillSet);
         return employeeEntity;
         //return this.restService.getEmployeeById(id);
+    }
+
+    public EmployeeProject addEmployeeToProject(EmployeeProject employeeProject){
+        return this.employeeProjectRepository.save(employeeProject);
+    }
+
+    public boolean hasSkill(EmployeeEntity employee, String skill){
+        return employee.getSkillSet().contains(skill);
     }
 }

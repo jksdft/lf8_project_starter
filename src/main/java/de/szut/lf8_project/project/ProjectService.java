@@ -1,22 +1,28 @@
 package de.szut.lf8_project.project;
 
-import de.szut.lf8_project.project.dto.GetProjectDto;
-import org.springframework.http.ResponseEntity;
+import de.szut.lf8_project.employee.EmployeeEntity;
+import de.szut.lf8_project.employee.EmployeeProject;
+import de.szut.lf8_project.employee.EmployeeProjectRepository;
+import de.szut.lf8_project.employee.EmployeeService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final EmployeeProjectRepository employeeProjectRepository;
+    private final EmployeeService employeeService;
 
-    public ProjectService(ProjectRepository projectRepository){
+    public ProjectService(ProjectRepository projectRepository, EmployeeProjectRepository employeeProjectRepository, EmployeeService employeeService){
         this.projectRepository = projectRepository;
+        this.employeeProjectRepository = employeeProjectRepository;
+        this.employeeService = employeeService;
     }
 
 
@@ -50,5 +56,14 @@ public class ProjectService {
 
         updatedProject = this.projectRepository.save(updatedProject);
         return updatedProject;
+    }
+
+    public List <EmployeeEntity> getEmployeesFromProject(ProjectEntity project){
+        List <EmployeeEntity> employees = new ArrayList<>();
+        List <EmployeeProject> employeeProjectList = employeeProjectRepository.findAllByProject(project);
+        for(EmployeeProject e : employeeProjectList){
+            employees.add(employeeService.getEmployeeById(e.getEmployeeId()));
+        }
+        return employees;
     }
 }

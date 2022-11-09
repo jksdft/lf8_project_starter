@@ -1,5 +1,6 @@
 package de.szut.lf8_project.project;
 
+import de.szut.lf8_project.employee.EmployeeEntity;
 import de.szut.lf8_project.employee.*;
 import de.szut.lf8_project.employee.dto.EmployeeSkillDto;
 import de.szut.lf8_project.project.dto.AddProjectDto;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.LinkedList;
@@ -82,4 +84,11 @@ public class ProjectController {
         return new ResponseEntity<>("Employee added to Project", HttpStatus.OK);
     }
 
+
+    @GetMapping("/{id}/employee")
+    public ResponseEntity<List<EmployeeEntity>> getAllEmployeesOfProject(@PathVariable Long id){
+        ProjectEntity project = this.projectService.getProjectById(id);
+        List<EmployeeEntity> employeeList = projectService.getEmployeesFromProject(project);
+        return new ResponseEntity<>(employeeList, HttpStatus.OK);
+    }
 }

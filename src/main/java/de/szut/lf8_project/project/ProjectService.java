@@ -66,4 +66,8 @@ public class ProjectService {
         }
         return employees;
     }
+
+    public void deleteEmployeeFromProject(ProjectEntity project, Long employeeId){
+        employeeProjectRepository.findAllByProject(project).remove(employeeId);
+    }
 }

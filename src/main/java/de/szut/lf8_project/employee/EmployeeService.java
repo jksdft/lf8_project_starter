@@ -1,10 +1,9 @@
 package de.szut.lf8_project.employee;
 
-import de.szut.lf8_project.project.ProjectEntity;
+import de.szut.lf8_project.exceptionHandling.EmployeeAlreadyAddedToProjectException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -32,11 +31,17 @@ public class EmployeeService {
         skillSet.add("Java");
         skillSet.add("SQL");
         employeeEntity.setSkillSet(skillSet);
-        return employeeEntity;
-        //return this.restService.getEmployeeById(id);
+        // return employeeEntity;
+        return this.restService.getEmployeeById(id);
     }
 
     public EmployeeProject addEmployeeToProject(EmployeeProject employeeProject){
+        List<EmployeeProject> employeeProjects = this.employeeProjectRepository.findAllByProject(employeeProject.getProject());
+        for(EmployeeProject e : employeeProjects){
+            if(e.getEmployeeId() == employeeProject.getEmployeeId()){
+                throw new EmployeeAlreadyAddedToProjectException("Employee with ID " + employeeProject.getEmployeeId() + " already added to Project with ID " + employeeProject.getProject().getId());
+            }
+        }
         return this.employeeProjectRepository.save(employeeProject);
     }
 

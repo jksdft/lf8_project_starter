@@ -1,12 +1,8 @@
 package de.szut.lf8_project.employee;
 
+import de.szut.lf8_project.employee.dto.AuthenticationDto;
 import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
-import io.swagger.v3.oas.integration.api.OpenApiReader;
-import org.keycloak.adapters.springsecurity.client.KeycloakClientRequestFactory;
-import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,23 +10,34 @@ import org.springframework.web.client.RestTemplate;
 public class EmployeeRestService {
 
     private final RestTemplate restTemplate;
-    private final KeycloakRestTemplate keycloakRestTemplate;
     private final String url;
-
 
     public EmployeeRestService() {
         this.restTemplate = new RestTemplate();
-        this.keycloakRestTemplate = new KeycloakRestTemplate(new KeycloakClientRequestFactory());
         this.url = "https://employee.szut.dev";
     }
 
 
     public EmployeeEntity getEmployeeById(Long id){
-        ResponseEntity<EmployeeEntity> response = this.keycloakRestTemplate.getForEntity(this.url + "/employees/" + id, EmployeeEntity.class);
+        ResponseEntity<EmployeeEntity> response = this.restTemplate.exchange(this.url + "/employees/" + id, HttpMethod.GET, this.getHttpEntityForEmployeeService(), EmployeeEntity.class);
         if(response.getStatusCode() == HttpStatus.OK){
             return response.getBody();
         }
         throw new ResourceNotFoundException("Employee with id " + id + " not found");
+    }
+
+    private HttpEntity getHttpEntityForEmployeeService(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(this.authenticate().getAccessToken());
+        return new HttpEntity(headers);
+    }
+
+    private AuthenticationDto authenticate() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<String> httpEntity = new HttpEntity<>("grant_type=password&client_id=employee-management-service&username=user&password=test", headers);
+        ResponseEntity<AuthenticationDto> response = this.restTemplate.exchange("https://keycloak.szut.dev/auth/realms/szut/protocol/openid-connect/token", HttpMethod.POST, httpEntity, AuthenticationDto.class);
+        return response.getBody();
     }
 
 }

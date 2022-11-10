@@ -1,6 +1,7 @@
 package de.szut.lf8_project.employee;
 
 import de.szut.lf8_project.exceptionHandling.EmployeeAlreadyAddedToProjectException;
+import de.szut.lf8_project.project.ProjectEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,4 +49,14 @@ public class EmployeeService {
     public boolean hasSkill(EmployeeEntity employee, String skill){
         return employee.getSkillSet().contains(skill);
     }
+
+    public List<ProjectEntity> getAllProjectsFromEmployee(Long employeeId){
+        List <ProjectEntity> allProjects= new ArrayList<>();
+
+        for(EmployeeProject e : employeeProjectRepository.findAllByEmployeeId(employeeId)){
+            allProjects.add(e.getProject());
+        }
+        return allProjects;
+    }
+
 }

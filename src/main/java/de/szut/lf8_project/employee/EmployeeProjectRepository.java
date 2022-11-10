@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface EmployeeProjectRepository extends JpaRepository<EmployeeProject, Long> {
     public List<EmployeeProject> findAllByProject(ProjectEntity project);
+    public Long deleteEmployeeProjectByEmployeeIdAndProject(Long EmployeeId, ProjectEntity project);
 }

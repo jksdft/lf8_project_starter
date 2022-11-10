@@ -68,6 +68,6 @@ public class ProjectService {
     }
 
     public void deleteEmployeeFromProject(ProjectEntity project, Long employeeId){
-        employeeProjectRepository.findAllByProject(project).remove(employeeId);
+        employeeProjectRepository.deleteEmployeeProjectByEmployeeIdAndProject(employeeId, project);
     }
 }

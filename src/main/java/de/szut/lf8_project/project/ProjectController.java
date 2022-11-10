@@ -92,7 +92,7 @@ public class ProjectController {
         return new ResponseEntity<>(employeeList, HttpStatus.OK);
     }
 
-    @GetMapping("/{projectId}/employee/{employeeId}")
+    @DeleteMapping("/{projectId}/employee/{employeeId}")
     public ResponseEntity<String> deleteEmployeeFromProject(@PathVariable Long projectId, @PathVariable Long employeeId){
         ProjectEntity project = this.projectService.getProjectById(projectId);
         projectService.deleteEmployeeFromProject(project, employeeId);

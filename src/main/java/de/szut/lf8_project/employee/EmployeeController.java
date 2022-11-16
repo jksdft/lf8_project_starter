@@ -3,6 +3,11 @@ package de.szut.lf8_project.employee;
 import de.szut.lf8_project.project.ProjectEntity;
 import de.szut.lf8_project.project.ProjectMapper;
 import de.szut.lf8_project.project.dto.GetProjectDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +29,12 @@ public class EmployeeController {
         this.projectMapper = projectMapper;
     }
 
+    @Operation(summary = "Get a list of all projects the employee is working on")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "project list", content = {@Content(mediaType = "application/json",
+                    schema = @Schema(implementation = GetProjectDto.class))}),
+            @ApiResponse(responseCode = "401", description = "not authorized",
+                    content = @Content)})
     @GetMapping("/{employeeId}")
     public ResponseEntity<List<GetProjectDto>> getAllProjectsFromEmployee(@PathVariable Long employeeId){
         List <ProjectEntity> allProjects =  employeeService.getAllProjectsFromEmployee(employeeId);

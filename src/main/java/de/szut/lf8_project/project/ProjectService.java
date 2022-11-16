@@ -27,10 +27,12 @@ public class ProjectService {
 
 
     public ProjectEntity createProject(ProjectEntity project){
+        employeeService.getEmployeeById(project.getResponsibleEmployee());
         return this.projectRepository.save(project);
     }
 
     public void deleteProject(ProjectEntity project) {
+        this.employeeProjectRepository.findAllByProject(project).forEach(employeeProject -> this.employeeProjectRepository.delete(employeeProject));
         this.projectRepository.delete(project);
     }
 
@@ -53,7 +55,7 @@ public class ProjectService {
         updatedProject.setResponsibleCustomer(project.getResponsibleCustomer());
         updatedProject.setComment(project.getComment());
         updatedProject.setRealEndDate(project.getRealEndDate());
-
+        employeeService.getEmployeeById(project.getResponsibleEmployee());
         updatedProject = this.projectRepository.save(updatedProject);
         return updatedProject;
     }
@@ -69,6 +71,9 @@ public class ProjectService {
 
     public void deleteEmployeeFromProject(ProjectEntity project, Long employeeId){
         EmployeeProject employeeProject = employeeProjectRepository.findByEmployeeIdAndProject(employeeId, project);
+        if(employeeProject == null){
+            throw new ResourceNotFoundException("Employee not found at the Project");
+        }
         employeeProjectRepository.delete(employeeProject);
     }
 }

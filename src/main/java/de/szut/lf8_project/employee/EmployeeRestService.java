@@ -4,6 +4,7 @@ import de.szut.lf8_project.employee.dto.AuthenticationDto;
 import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -19,11 +20,12 @@ public class EmployeeRestService {
 
 
     public EmployeeEntity getEmployeeById(Long id){
-        ResponseEntity<EmployeeEntity> response = this.restTemplate.exchange(this.url + "/employees/" + id, HttpMethod.GET, this.getHttpEntityForEmployeeService(), EmployeeEntity.class);
-        if(response.getStatusCode() == HttpStatus.OK){
+        try {
+            ResponseEntity<EmployeeEntity> response = this.restTemplate.exchange(this.url + "/employees/" + id, HttpMethod.GET, this.getHttpEntityForEmployeeService(), EmployeeEntity.class);
             return response.getBody();
+        }catch(HttpClientErrorException e){
+            throw new ResourceNotFoundException("Employee with id " + id + " not found");
         }
-        throw new ResourceNotFoundException("Employee with id " + id + " not found");
     }
 
     private HttpEntity getHttpEntityForEmployeeService(){
